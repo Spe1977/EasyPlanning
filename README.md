@@ -5,7 +5,11 @@
 <h1 align="center">EasyPlanning</h1>
 
 <p align="center">
-  <strong>Pianificatore Android offline-first per turni di lavoro, straordinari, indennità, statistiche, report PDF e backup cifrati.</strong>
+  <strong>Offline-first Android shift planner built with Kotlin & Jetpack Compose — featuring recurring/rotating shifts, 5 overtime categories, allowances, analytics, native PDF reports, and AES-256-GCM encrypted backups.</strong>
+</p>
+
+<p align="center">
+  <strong>English</strong> · <a href="README_IT.md">Italiano</a>
 </p>
 
 <p align="center">
@@ -17,115 +21,114 @@
 
 ---
 
-## Panoramica
+## Overview
 
-**EasyPlanning** è un'applicazione Android nativa sviluppata in **Kotlin** e **Jetpack Compose (Material 3)** progettata per lavoratori turnisti. Funziona completamente **offline** con database locale Room, protegge i dati tramite cifratura **AES-256-GCM** e consente di esportare report mensili in PDF o sincronizzare un vault cifrato sul proprio spazio privato Google Drive (`appDataFolder`) senza alcun server centrale.
-
----
-
-## Funzionalità principali
-
-### Pianificazione e Gestione Turni
-- **Viste duali**: timeline cronologica continua (*Lista*) con ricerca data rapida (*Cerca Data*) e ritorno immediato a *Oggi*, affiancata da un **Calendario Mensile** interattivo con bottom sheet di dettaglio giornaliero.
-- **Ricorrenze avanzate**: turni singoli, giornalieri, settimanali (selezione multipla dei giorni e intervallo), mensili (gestione automatica fine mese e anni bisestili) e **cicli a rotazione** (*N giorni lavorativi / M giorni di riposo*).
-- **Condizioni di fine serie**: mai, fino a una data specifica oppure dopo *N* occorrenze.
-- **Turni notturni e multi-turno**: calcolo automatico della durata anche a cavallo della mezzanotte o di Capodanno, supporto a più turni nello stesso giorno, 10 colori personalizzabili e preset rapidi (*Mattina*, *Pomeriggio*, *Notte*, *Giornaliero*).
-- **Modifica granulare**: modifica o eliminazione della **singola occorrenza** (tramite override dedicato) oppure dell'**intera serie**.
-
-### Straordinari e Indennità
-- **5 categorie di straordinario** a scatti di 30 minuti:
-  - **Feriale** (`FER` / `WD`)
-  - **Festivo** (`FEST` / `HOL`)
-  - **Notturno** (`NOTT` / `NGT`)
-  - **Notturno Festivo** (`N-FEST` / `N-H`)
-  - **Programmato** (`PROG` / `SCH`)
-- **Indennità flessibili**: preset integrati (es. *Buono Pasto*) e voci personalizzate con quantità e note.
-- **Inserimento inline e propagazione**: configurabili sia in creazione sia in modifica turno, con interruttore dedicato per applicare gli extra a tutte le occorrenze della serie o solo alla data selezionata.
-
-### Statistiche e Report PDF
-- **Dashboard Statistiche** su periodo **Settimana**, **Mese** o **Anno**: giorni lavorati, ore ordinarie totali, riepilogo ore straordinario per ciascuna delle 5 categorie, distribuzione turni e conteggio indennità.
-- **Report PDF mensile nativo (A4 multi-pagina)**: impaginazione completa del riepilogo mensile e del dettaglio giornaliero in Italiano o Inglese, con esportazione su dispositivo (SAF) e condivisione diretta via `FileProvider`.
-
-### Notifiche e Promemoria
-- Promemoria configurabili per ogni turno (da *All'inizio* fino a *1 giorno prima*, o disabilitati) e predefiniti nelle Impostazioni.
-- Pianificazione automatica degli allarmi locali su finestra scorrevole di 30 giorni e **ripristino automatico al riavvio del dispositivo** (`BOOT_COMPLETED`).
-- Gestione esplicita del permesso `POST_NOTIFICATIONS` su Android 13+.
-
-### Sicurezza, Privacy e Backup
-- **Architettura Offline-First**: nessun backend proprietario; i turni restano nel database locale SQLite/Room del dispositivo.
-- **Account flessibile**: utilizzo completamente offline (*Username + Password*), accesso con **Google Sign-In** (Jetpack Credential Manager) oppure upgrade ad account **Ibrido**.
-- **Cifratura autenticata**: backup esportati localmente (`.epbak`) e su **Google Drive (`appDataFolder`)** cifrati client-side con **AES-256-GCM** e chiave derivata con **PBKDF2-HMAC-SHA256**; azzeramento dei `CharArray` sensibili in memoria dopo l'uso.
-- **Protezione locale**: credenziali protette tramite **Android Keystore**, blocco app con **PIN e Biometria**, protezione screenshot/app recenti (`FLAG_SECURE`) e reset completo protetto da conferma multi-step (fino a 3 passaggi).
-
-### Esperienza Utente e Accessibilità
-- **Material Design 3** con temi *Sistema*, *Chiaro*, *Scuro* e **Material You Dynamic Color** (Android 12+).
-- **Layout adattivo**: `NavigationBar` inferiore su smartphone e `NavigationRail` laterale su tablet e pieghevoli (`>= 600dp`).
-- **Multilingua istantaneo**: interfaccia e report PDF disponibili in **Italiano** e **Inglese**.
+**EasyPlanning** is a native Android application built in **Kotlin** and **Jetpack Compose (Material 3)** tailored for shift workers. Designed with a strict **offline-first** and **privacy-first** architecture, it stores schedules locally in Room, protects credentials via Android Keystore, generates multi-page A4 monthly PDF reports natively, and optionally syncs **AES-256-GCM** encrypted vaults to the user's private Google Drive (`appDataFolder`) with no central app server.
 
 ---
 
-## Stack Tecnologico
+## Key Features
 
-| Ambito | Tecnologie |
+### Shift Scheduling & Recurrence
+- **Dual Schedule Views**: Continuous chronological timeline (*List*) with instant *Search Date* and *Today* jump controls, paired with an interactive **Monthly Calendar** and day-detail bottom sheet.
+- **Advanced Recurrence Engine**: Single shifts, daily, weekly (multi-weekday mask + custom interval), monthly (automatic end-of-month & leap-year clamping), and **rotating cycles** (*N work days / M off days*).
+- **Flexible End Conditions**: Repeat *Never*, *Until date*, or *After N shifts*.
+- **Overnight & Multi-Shift Support**: Accurate duration calculation across midnight and year boundaries, multiple shifts per day, 10 shift color swatches, and quick presets (*Morning*, *Afternoon*, *Night*, *Full Day*).
+- **Granular Editing**: Edit or delete a **single occurrence** (via isolated overrides) or the **entire series**.
+
+### Overtime & Allowances
+- **5 Overtime Categories** in 30-minute increments:
+  - **Weekday** (`WD` / `FER`)
+  - **Holiday** (`HOL` / `FEST`)
+  - **Night** (`NGT` / `NOTT`)
+  - **Night Holiday** (`N-H` / `N-FEST`)
+  - **Scheduled** (`SCH` / `PROG`)
+- **Allowances**: Built-in presets (such as *Meal Voucher*) plus custom allowance labels with quantity and notes.
+- **Inline Creation & Editing**: Add or edit overtime and allowances directly while creating or editing shifts, with a dedicated switch to propagate extras across every occurrence in a recurring series or keep them on a single date.
+
+### Analytics & Native PDF Reports
+- **Statistics Dashboard** across **Week**, **Month**, and **Year** periods: worked days, total regular hours, overtime breakdown across all 5 categories, shift distribution, and allowance totals.
+- **Multi-Page A4 Monthly PDF Reports**: Native Android `PdfDocument` rendering in English or Italian, supporting both device export (SAF) and direct sharing via `FileProvider`.
+
+### Reminders & Notifications
+- Configurable per-shift and default lead-time reminders (from *At start* up to *1 day before*, or disabled).
+- Automatic 30-day rolling alarm scheduling and **reboot persistence** via `BOOT_COMPLETED`.
+- Graceful Android 13+ `POST_NOTIFICATIONS` runtime permission handling.
+
+### Security, Privacy & Encrypted Backups
+- **Zero-Backend Offline-First Design**: All schedule data lives locally on-device in SQLite/Room.
+- **Flexible Accounts**: Fully offline mode (*Username + Password*), **Google Sign-In** (Jetpack Credential Manager), or seamless upgrade to a **Hybrid** account.
+- **Authenticated Client-Side Encryption**: Local backups (`.epbak`) and optional **Google Drive (`appDataFolder`)** sync use **AES-256-GCM** with **PBKDF2-HMAC-SHA256** key derivation and per-export random salt/IV. Sensitive `CharArray` buffers are zeroized after use.
+- **On-Device Hardening**: Local secrets protected with **Android Keystore**, **PIN + Biometric App Lock**, screenshot/recents protection (`FLAG_SECURE`), and multi-step secure reset (up to 3 confirmation steps).
+
+### Modern Adaptive UI
+- **Material Design 3** with *System*, *Light*, and *Dark* themes plus **Material You Dynamic Color** (Android 12+).
+- **Adaptive Navigation**: Bottom `NavigationBar` on compact screens and side `NavigationRail` on tablets/foldables (`>= 600dp`).
+- **Instant Bilingual Support**: Full UI and PDF report localization in **English** and **Italian**.
+
+---
+
+## Tech Stack
+
+| Layer | Technologies |
 | :--- | :--- |
-| **Linguaggio & UI** | Kotlin, Jetpack Compose, Material 3, Navigation Compose |
-| **Architettura** | MVVM (`ViewModel`, `StateFlow` / `SharedFlow`, Coroutines & Flow) |
-| **Persistenza locale** | Room Database (v2 con migrazione v1 → v2), Jetpack DataStore Preferences |
-| **Sicurezza** | Android Keystore, AES-256-GCM, PBKDF2-HMAC-SHA256, AndroidX Biometric |
-| **Auth & Cloud Sync (opzionale)** | Jetpack Credential Manager (Google Sign-In), Google Play Services Auth, Retrofit + OkHttp + Moshi (Google Drive `appDataFolder`) |
-| **PDF & Notifiche** | Android `PdfDocument` nativo, `AlarmManager`, `NotificationCompat`, `FileProvider` |
-| **Test** | JUnit 4, Kotlin Coroutines Test, Robolectric, Jetpack Compose UI Test |
+| **Language & UI** | Kotlin, Jetpack Compose, Material 3, Navigation Compose |
+| **Architecture** | MVVM (`ViewModel`, `StateFlow` / `SharedFlow`, Kotlin Coroutines & Flow) |
+| **Local Persistence** | Room Database (v2 with `MIGRATION_1_2`), Jetpack DataStore Preferences |
+| **Security** | Android Keystore, AES-256-GCM, PBKDF2-HMAC-SHA256, AndroidX Biometric |
+| **Auth & Cloud Sync (optional)** | Jetpack Credential Manager (Google Sign-In), Play Services Auth, Retrofit + OkHttp + Moshi (Google Drive `appDataFolder`) |
+| **PDF & Notifications** | Android `PdfDocument`, `AlarmManager`, `NotificationCompat`, `FileProvider` |
+| **Testing** | JUnit 4, Kotlin Coroutines Test, Robolectric, Jetpack Compose UI Test |
 
-Per i dettagli completi sui moduli, lo schema Room e il formato del vault cifrato, consulta [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+For module structure, Room v2 schema details, virtual recurring extras design, and vault security internals, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ---
 
-## Requisiti e Avvio Locale
+## Getting Started
 
-### Prerequisiti
-- **Android Studio** (versione compatibile con AGP recente e Android SDK 36)
-- **JDK 17** (target bytecode Java 11 con core library desugaring)
+### Prerequisites
+- **Android Studio** (compatible with AGP and Android SDK 36)
+- **JDK 17** (targeting Java 11 bytecode with core library desugaring)
 - **Android SDK**: `compileSdk 36`, `targetSdk 36`, `minSdk 24`
 
-### Clonazione e Build
+### Clone, Build & Test
 ```bash
 git clone https://github.com/Spe1977/EasyPlanning.git
 cd EasyPlanning
-```
 
-Apri il progetto in **Android Studio** ed esegui la configurazione `app` su emulatore o dispositivo fisico, oppure da terminale:
-
-```bash
 # Build Debug APK
 ./gradlew :app:assembleDebug
 
-# Esecuzione suite completa di test locali (JVM + Robolectric + Compose UI)
+# Run full local test suite (JVM + Robolectric + Compose UI)
 ./gradlew :app:testDebugUnitTest
 ```
 
-> **Nota sulle funzionalità Google (opzionali):** EasyPlanning funziona integralmente in modalità offline senza alcuna configurazione cloud. Se desideri abilitare **Google Sign-In** e la sincronizzazione su **Google Drive (`appDataFolder`)** nella tua build personale, configura un OAuth Client ID (Android + Web) su Google Cloud Console e fornisci il file locale non versionato secondo le indicazioni di configurazione del progetto. Non committare mai segreti o chiavi private nel repository.
+> **Optional Google Integrations:** EasyPlanning works 100% offline out of the box without any cloud setup. To enable **Google Sign-In** and **Google Drive (`appDataFolder`)** sync in your own build, configure OAuth 2.0 credentials (Android + Web Client ID) in Google Cloud Console and provide your local untracked config. Never commit private keys, keystores, or `.env` secrets to a public repository.
 
 ---
 
-## Copertura Test Automatici
+## Automated Test Suite
 
-La suite automatica copre logica di dominio, migrazioni database, crittografia, preferenze, ViewModel, report PDF, notifiche e schermate Compose:
+The automated test suite validates domain logic, database migrations, cryptography, ViewModel flows, notifications, PDF rendering, and Compose UI components:
 
-- **Dominio e Ricorrenze**: espansione di tutte le tipologie di ricorrenza, anni bisestili, turni notturni e 24h, statistiche multi-periodo, codec JSON resiliente e crittografia AES-GCM.
-- **Database e Backup**: migrazione Room v1 → v2, sanitizzazione e validazione backup cifrati, retrocompatibilità payload v1 e gestione atomica errori senza perdita di dati.
-- **Auth, Sicurezza e ViewModel**: registrazione/login offline, logout, account ibrido, blocco PIN, impostazioni persistenti, ricerca data e rimozione selettiva di extra ereditati o diretti.
-- **Notifiche e PDF**: pianificazione/cancellazione allarmi, `BootRescheduleReceiver`, permessi Android 13+ e rendering multi-pagina A4 IT/EN.
-- **UI Compose e Navigazione**: calendario, bottom sheet, editor turni, dialoghi di straordinari/indennità/sicurezza/reset, blocco app e layout adattivo `NavigationBar` / `NavigationRail`.
-
----
-
-## Sicurezza e Contributi
-
-- Consulta [`SECURITY.md`](SECURITY.md) per l'architettura di sicurezza e la segnalazione responsabile di vulnerabilità.
-- Consulta [`CONTRIBUTING.md`](CONTRIBUTING.md) per le linee guida sui contributi e sulle Pull Request.
+- **Domain & Recurrence**: All recurrence types, leap-year clamping, overnight/24h shifts, multi-period statistics, resilient JSON codec, and AES-GCM encryption/tamper rejection.
+- **Database & Backups**: Room `v1 → v2` migration, encrypted backup round-trips, legacy v1 payload backward compatibility, input sanitization, and atomic rejection of malformed payloads.
+- **Auth, Security & ViewModel**: Offline registration/login, non-destructive logout, hybrid upgrade, PIN lock/unlock, persistent app preferences, dynamic timeline expansion, and selective deletion of inherited vs direct extras.
+- **Notifications & PDF**: Rolling 30-day alarm scheduling/cancellation, `BootRescheduleReceiver`, Android 13+ notification permissions, and multi-page A4 PDF rendering in EN & IT.
+- **Compose UI & Adaptive Shell**: Calendar, day-detail sheet, shift editor (presets, recurrences, inline extras), security/reset dialogs, settings controls, App Lock gate, and `NavigationBar` vs `NavigationRail`.
 
 ---
 
-## Licenza
+## Contributors
 
-Distribuito con licenza **MIT**. Consulta il file [`LICENSE`](LICENSE) per i dettagli completi.
+- **[@Spe1977](https://github.com/Spe1977)** — Project Creator, Product Vision & Maintainer
+- **Gemini (Google AI)** — AI Engineering, Architecture & Automated Testing Contributor
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) if you would like to contribute to EasyPlanning.
+
+---
+
+## Security & License
+
+- Read [`SECURITY.md`](SECURITY.md) for EasyPlanning's security model and vulnerability disclosure guidelines.
+- Licensed under the **MIT License** — see [`LICENSE`](LICENSE) for details.
