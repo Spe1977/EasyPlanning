@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">EasyPlanning</string>
+    <string name="notification_channel_shifts_name">Promemoria Turni</string>
+    <string name="notification_channel_shifts_desc">Notifiche prima dell\'inizio dei tuoi turni di lavoro</string>
+</resources>

@@ -1,0 +1,6 @@
+{
+  "name": "EasyPlanning",
+  "description": "Offline-first Android work shift planner with recurring schedules, 0.5h overtime tracking, allowances, interactive analytics, monthly PDF export, AES-256-GCM encrypted backups, and Google Drive sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
